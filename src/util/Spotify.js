@@ -1,5 +1,5 @@
 const clientID = 'a3f3ce24b78f4e129d75ddd384eaedb8';
-const redirectURI = "http://localhost:3000/";
+const redirectURI = "http://tomekpierwszaapka.surge.sh";
 let accessToken = '';
 let expiresIn = '';
 let url=';'
@@ -57,14 +57,18 @@ const Spotify = {
     if (playlistName === String.Empty && trackURIs=== Array.Empty) {
       return;
     }
-    const accesToken = this.getAccessToken();
+    this.getAccessToken();
     const headers = {Authorization :`Bearer ${accessToken}`}
     let userID = '';
     let playlistID ='';
+    console.log(accessToken)
 
      return fetch(`https://api.spotify.com/v1/me`,
       {
-      headers: headers
+        headers: {
+          "Content-Type": "application/json",
+          Authorization :`Bearer ${accessToken}`,
+        },
       }).then(response => {
         if(response.ok) {
           return response.json();
@@ -75,12 +79,15 @@ const Spotify = {
       if(jsonResponse.id) {
         userID= jsonResponse.id;
         return fetch(`https://api.spotify.com/v1/users/${userID}/playlists`,{
+          headers: {
+            "Content-Type": "application/json",
+            Authorization :`Bearer ${accessToken}`,
+          },
           method:'POST',
-          headers: headers,
           body:JSON.stringify({
             name: playlistName,
             description: "New playlist description",
-            public: false}),
+            }),
         })
       }}).then(response => {
         if(response.ok) {
@@ -93,19 +100,27 @@ const Spotify = {
       if(jsonResponse) {
         playlistID = jsonResponse.id;
         console.log(playlistID);
+          console.log(trackURIs);
+          trackURIs = trackURIs.map(track => track.uri);
         return fetch(`https://api.spotify.com/v1/users/${userID}/playlists/${playlistID}/tracks`,
           {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization :`Bearer ${accessToken}`,
+          },
           method:'POST',
-          headers: headers,
           body:JSON.stringify({
             uris: trackURIs,
           }),
         })
       }
     }).then(response => {
+      console.log(response);
+
         if(response.ok) {
           return response.json();
         }
+        response.json().then(json => console.log(json)).catch(err => console.log(err));
         throw new Error('Request failed!');
       }, networkError => console.log(networkError.message)
     ).then(jsonResponse => {
