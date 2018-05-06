@@ -1,0 +1,2 @@
+http://tomekpierwszaapka.surge.sh
+zmiana w Spotify.js i na stronie Spotify development

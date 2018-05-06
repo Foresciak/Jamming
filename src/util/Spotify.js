@@ -1,5 +1,5 @@
 const clientID = 'a3f3ce24b78f4e129d75ddd384eaedb8';
-const redirectURI = "http://tomekpierwszaapka.surge.sh";
+const redirectURI = "http://localhost:3000/";
 let accessToken = '';
 let expiresIn = '';
 let url=';'
