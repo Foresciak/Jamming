@@ -11,8 +11,9 @@ class App extends React.Component {
     super(props);
     this.state = {
       searchResult: [],
-      playlistName: 'defaultowo',
+      playlistName: 'New Playlist',
       playlistTracks: [],
+      loading: false,
     }
     this.addTrack = this.addTrack.bind(this);
     this.removeTrack = this.removeTrack.bind(this);
@@ -46,8 +47,11 @@ class App extends React.Component {
   }
 
   savePlaylist () {
-    Spotify.savePlaylist(this.state.playlistName, this.state.playlistTracks);
-    this.setState({playlistName:'New Playlist', playlistTracks: []});
+    this.setState({loading: true})
+    setTimeout(function(){Spotify.savePlaylist(this.state.playlistName, this.state.playlistTracks).then(
+      this.setState({playlistName:'New Playlist', playlistTracks: [], loading: false})
+    );},10000);
+
   }
 
   search(term) {
@@ -66,7 +70,7 @@ class App extends React.Component {
           <SearchBar onSearch = {this.search}/>
           <div className="App-playlist">
             <SearchResults searchResults={this.state.searchResult} onAdd={this.addTrack}  />
-            <Playlist playlistName={this.state.playlistName} playlistTracks={this.state.playlistTracks} onRemove={this.removeTrack} onChange={this.updatePlaylistName} onSave={this.savePlaylist}/>
+            <Playlist loading={this.state.loading} playlistName={this.state.playlistName} playlistTracks={this.state.playlistTracks} onRemove={this.removeTrack} onChange={this.updatePlaylistName} onSave={this.savePlaylist}/>
           </div>
         </div>
       </div>
